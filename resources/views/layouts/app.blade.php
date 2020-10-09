@@ -10,38 +10,60 @@
     <title>Marraneria</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-    <script src="{{ asset('js/all.js') }}"></script>
-
-
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    <!-- <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/all.js') }}"></script> -->
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
     <link rel="stylesheet" href="{{ asset('css/all.css') }}">
-    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:700,900|Open+Sans|Open+Sans+Condensed:700" rel="stylesheet" crossorigin="anonymous">
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <!-- llamado a bootstrap -->
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+
+    <!-- <script src="{{ asset('js/dashboard.js')}}"></script> -->
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+    <!-- Custom styles for this template -->
+    <!-- <link href="dashboard.css" rel="stylesheet"> -->
 </head>
-<body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
+<!-- <body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show"> -->
+    <body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
+        
     @include('common.header')
     <div class="app-body"  >
         
         <div class="sidebar">
             @include('common.sidebar')
             <button class="sidebar-minimizer brand-minimizer" type="button"></button>
-        </div>
-        <main class="main" id="app">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">@yield('breadcrumb')</li>
-            </ol>
-            <div class="container-fluid">
-                <div id="ui-view"></div>
+        </div>    
+    
+    <!-- </main> -->
+        <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4" id='app'>
+            <!-- aqui va todo el codigo de vistar -->
+           <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+             @yield('content')                   
             </div>
-            @yield('content')
         </main>
-    </div>
-    {{--  <script src="{{ asset('js/app.js')}}"></script>  --}}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src=" {{ asset('js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
+    
+
 </body>
 </html>
