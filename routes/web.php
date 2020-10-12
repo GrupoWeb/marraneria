@@ -9,7 +9,33 @@ Auth::routes();
 
 Route::get('/','inventario@index')->name('index');
 // Route::get('/home', 'HomeController@index')->name('home');
-Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
+
+
+// Route for marrane
+
+// Controller Auth
+Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout')->name('logout');
+
+
+// Show View
+Route::get('cliente','marranex@showclient')->name('client');
+
+
+// http post
+Route::post('client','marranexController@addclient');
+
+
+
+// http get
+Route::get('client','marranexController@listClient');
+
+
+
+// http put
+
+
+
+
 Route::get('getYear','catalogo@getYear');
 Route::get('sequence/{table}','catalogo@sequences_data');
 Route::post('barCode','BarCode@barcodeGet');

@@ -1,6 +1,21 @@
+.color_Institucional{
+    background-color: #ff473e !important;
+}
+
+.franja{
+    background-color: #94231e !important;
+}
+
+body{
+    background-color: #ededed !important;
+}
+
+/* 
 .color_institucional{
     background-color: #ff473e !important;
 }
+
+
 
 .sidebar{
     background: #162947 !important;
@@ -63,4 +78,4 @@
 
 .padding-top{
     padding-top:180px !important;
-}
+} */

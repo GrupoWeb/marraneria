@@ -49,6 +49,14 @@ Vue.component('visualizar-component', require('./components/admin/visualizar.vue
 Vue.component('roles-component', require('./components/admin/roles.vue').default);
 Vue.component('edificios-component', require('./components/admin/edificios.vue').default);
 
+
+// Vue file marranex
+
+Vue.component('client', require('./components/marranex/client.vue').default);
+
+
+
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

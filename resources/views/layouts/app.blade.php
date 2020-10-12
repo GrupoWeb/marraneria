@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Marraneria</title>
+    <title>Marranex</title>
 
     <!-- Scripts -->
     <!-- <script src="{{ asset('js/app.js') }}" defer></script>
@@ -20,6 +20,7 @@
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <!-- llamado a bootstrap -->
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 
     <!-- <script src="{{ asset('js/dashboard.js')}}"></script> -->
 
@@ -43,20 +44,22 @@
     <!-- <link href="dashboard.css" rel="stylesheet"> -->
 </head>
 <!-- <body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show"> -->
-    <body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
+    <!-- <body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show"> -->
+    <body>
         
     @include('common.header')
-    <div class="app-body"  >
+    <div>
         
-        <div class="sidebar">
+        <div >
             @include('common.sidebar')
-            <button class="sidebar-minimizer brand-minimizer" type="button"></button>
+            <!-- <button class="sidebar-minimizer brand-minimizer" type="button"></button> -->
         </div>    
     
     <!-- </main> -->
         <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4" id='app'>
             <!-- aqui va todo el codigo de vistar -->
-           <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+           <!-- <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"> -->
+           <div class="pt-5">
              @yield('content')                   
             </div>
         </main>
