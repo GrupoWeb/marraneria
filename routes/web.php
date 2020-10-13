@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 
+// cambio
+
 Route::get('/','inventario@index')->name('index');
 // Route::get('/home', 'HomeController@index')->name('home');
 
