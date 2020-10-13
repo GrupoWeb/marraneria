@@ -18,7 +18,7 @@
                                      <i class="nav-icon fas fa-file-invoice"></i> Clientes</a>
                              </li>
                              <li class="nav">
-                                 <a class="nav-link" href="./roles">
+                                 <a class="nav-link" href="{{ route('product') }}">
                                      <i class="nav-icon fas fa-file-invoice"></i> Producto</a>
                              </li>
                              <li class="nav">

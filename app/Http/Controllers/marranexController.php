@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Model\marranex\client;
+use App\Model\marranex\product;
+
 
 class marranexController extends Controller
 {
@@ -35,6 +37,30 @@ class marranexController extends Controller
     public function listClient(){
         
         $list = client::all();
+
+        return response()->json($list,200);
+    }
+
+    public function addproduct(Request $data){
+        try {
+            DB::beginTransaction();
+
+            $product = product::create([
+                'name' =>  $data->name,
+            ]);
+
+            DB::commit();
+
+            return response()->json($product,200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json(false,200);
+        }
+    }
+    
+    public function listProduct(){
+        
+        $list = product::all();
 
         return response()->json($list,200);
     }

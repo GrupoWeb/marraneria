@@ -34,6 +34,15 @@ Route::get('client','marranexController@listClient');
 // http put
 
 
+//////////////////////////////////
+Route::get('producto','marranex@showproduct')->name('product');
+
+// http post
+Route::post('product','marranexController@addproduct');
+
+// http get
+Route::get('product','marranexController@listProduct');
+
 
 
 Route::get('getYear','catalogo@getYear');
