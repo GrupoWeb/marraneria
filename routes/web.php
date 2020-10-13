@@ -37,13 +37,15 @@ Route::get('client','marranexController@listClient');
 
 
 //////////////////////////////////
-Route::get('producto','marranex@showproduct')->name('product');
+Route::get('producto','marranex@showproduct')->name('product'); // este me inmagino que es para la ruta de la vista
 
 // http post
-Route::post('product','marranexController@addproduct');
+Route::post('product','marranexController@addproduct'); // este para el add a la base de datos
 
 // http get
-Route::get('product','marranexController@listProduct');
+Route::get('productList','marranexController@listProduct'); // este para mostrar lo que ingresaste
+
+// en este caso no pueden ir dos get con el mismo nombre
 
 
 
