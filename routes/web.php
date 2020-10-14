@@ -36,6 +36,8 @@ Route::get('productList','marranexController@listProduct');
 
 // http put
 Route::put('client','marranexController@deleteClient');
+Route::put('product','marranexController@editProduct');
+Route::put('delete','marranexController@deleteProduct');
 
 
 

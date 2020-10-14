@@ -16,7 +16,10 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name',250);
+            $table->bigInteger('status_id')->unsigned();
             $table->timestamps();
+
+            $table->foreign('status_id')->references('id')->on('estados');
         });
     }
 
