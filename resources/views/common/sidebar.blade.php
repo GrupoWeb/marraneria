@@ -15,32 +15,35 @@
                              <li class="nav">
                                  <!-- <a class="nav-link" href="./showunidades"> -->
                                  <a class="nav-link" href="{{ route('client') }}">
-                                     <i class="nav-icon fas fa-file-invoice"></i> Clientes</a>
+                                     <i class="nav-icon fas far fa-user"></i> Clientes</a>
                              </li>
                              <li class="nav">
                                  <a class="nav-link" href="{{ route('product') }}">
-                                     <i class="nav-icon fas fa-file-invoice"></i> Producto</a>
+                                     <i class="nav-icon fas fa-cart-plus"></i> Producto</a>
+                                    
                              </li>
                              <li class="nav">
                                  <a class="nav-link" href="./showUsuarios">
-                                     <i class="nav-icon fas fa-ticket-alt"></i> Ventas</a>
+                                    <i class="nav-icon fas fa-store"></i> Ventas</a>
+                                    {{-- <i class="nav-icon far fa-chart-bar"></i> Ventas</a> --}}
                              </li>
                              <li class="nav">
                                  <a class="nav-link" href="./edificios">
-                                     <i class="nav-icon fas fa-ticket-alt"></i> Reporte</a>
+                                     <i class="nav-icon fas fa-chart-line"></i> Reporte</a>
                              </li>
                              <li class="nav">
                                  <a class="nav-link" href="./edificios">
-                                     <i class="nav-icon fas fa-ticket-alt"></i> Total Deuda</a>
+                                     {{-- <i class="nav-icon far fa-chart-bar"></i> Total Deuda</a> --}}
+                                     <i class="nav-icon far fa-chart-bar"></i> Deuda</a>
                              </li>
-                             <li class="nav">
+                             {{-- <li class="nav">
                                  <a class="nav-link" href="./edificios">
                                      <i class="nav-icon fas fa-ticket-alt"></i> Deuda Clientes</a>
-                             </li>
-                             <li class="nav">
+                             </li> --}}
+                             {{-- <li class="nav">
                                  <a class="nav-link" href="./visualizar">
                                      <i class="nav-icon fas fa-dolly-flatbed"></i> Importar</a>
-                             </li>
+                             </li> --}}
                          </ul>
                      </li>
                      @endif

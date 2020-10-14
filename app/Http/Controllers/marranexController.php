@@ -23,6 +23,7 @@ class marranexController extends Controller
                 'phone'     =>  $data->phone,
                 'company'   =>  $data->company,
                 'contact'   =>  $data->contact,
+                'status_id' => 1,
             ]);
 
             DB::commit();
@@ -36,9 +37,23 @@ class marranexController extends Controller
 
     public function listClient(){
         
-        $list = client::all();
+        $list = client::select('id','nit','name','surname','address','dpi','phone','company','contact')->where('status_id',1)->get();
 
         return response()->json($list,200);
+    }
+
+    public function deleteClient(Request $request){
+        try {
+            DB::beginTransaction();
+
+            $search = client::where('id',$request->id)->update(['status_id' => 2]);
+
+            DB::commit();
+
+            return response()->json($search,200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+        }
     }
 
     public function addproduct(Request $data){
