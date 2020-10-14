@@ -4,7 +4,7 @@
       <div class="card-header text-white franja">Catálogo de Productos</div>
       <div class="card-body">
         <el-form ref="form" :model="form" :rules="rules" label-width="150px">
-          <el-form-item label="Nombre Producto" prop="name">
+          <el-form-item label="Nombre:" prop="name">
             <el-input v-model="form.name"></el-input>
           </el-form-item>
           <el-form-item>
@@ -26,23 +26,20 @@
           style="width: 100%"
         >
           <el-table-column label="No." type="index"></el-table-column>
-          <el-table-column
-            label="Producto"
-            prop="name"
-          ></el-table-column>
+          <el-table-column label="Producto" prop="name"></el-table-column>
           <el-table-column label="Acciones" width="200">
             <template slot-scope="scope">
               <el-button
                 size="mini"
                 @click="
-                  handleEdit(scope.row.id_producto, scope.row.descripcion)
+                  handleEdit(scope.row.id)
                 "
                 >Editar</el-button
               >
               <el-button
                 size="mini"
                 type="danger"
-                @click="handleDelete(scope.row.id_producto)"
+                @click="handleDelete(scope.row.id)"
                 v-loading.fullscreen.lock="EditscreenLoading"
                 >Eliminar</el-button
               >
@@ -67,20 +64,17 @@
           <el-form
             :inline="false"
             :model="formEdit"
-            ref="form"
-            :rule="rules"
+            ref="formEdit"
+            :rule="rule"
             label-width="150px"
           >
-            <el-form-item label="Nombre Anterior">
-              <label style="color: red">{{ descripcion_seleccion }}</label>
-            </el-form-item>
-            <el-form-item label="Nuevo Nombre">
+            <el-form-item label="Nombre:">
               <el-input v-model="formEdit.name"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button
                 type="primary"
-                @click="editProduct()"
+                @click="editProduct('formEdit')"
                 v-loading.fullscreen.lock="EditscreenLoading"
                 >Guardar</el-button
               >
@@ -99,6 +93,8 @@ export default {
       url_data: {
         listProduct: "product",
         getList: "productList",
+        editProduct: "product",
+        delete: "delete",
       },
       response_data: {
         listProduct: [],
@@ -123,6 +119,16 @@ export default {
           },
         ],
       },
+      rule: {
+        name: [
+          {
+            required: true,
+            message: "Este campo no puede ser vacio",
+            trigger: "blur",
+
+          }
+        ]
+      },
       fullscreenLoading: false,
       EditscreenLoading: false,
       dialogo: false,
@@ -131,7 +137,7 @@ export default {
     };
   },
   mounted() {
-      this.getProduct();
+    this.getProduct();
   },
   methods: {
     onSubmit(form) {
@@ -161,7 +167,7 @@ export default {
         } else {
           this.$message.error({
             message: h("p", null, [
-              h("i", { style: "color: red" }, "Ingrese un Nombre de Categoria"),
+              h("i", { style: "color: red" }, "Ingrese Producto"),
             ]),
           });
           return false;
@@ -174,64 +180,71 @@ export default {
     getProduct() {
       axios.get(this.url_data.getList).then((response) => {
         this.response_data.listGet = response.data;
-        console.log(response.data);
+        
       });
     },
-    // getAll() {
-    //     let url = "allProduct";
-    //     axios.get(url).then(response => {
-    //         this.listProduct = response.data;
-    //         this.total = response.data.length;
-    //     });
-    // },
-    // editProduct() {
-    //     const h = this.$createElement;
-    //     let url = "editProduct";
-    //     this.EditscreenLoading = true;
-    //     axios
-    //         .post(url, {
-    //             id: this.id_seleccion,
-    //             new: this.formEdit.name
-    //         })
-    //         .then(response => {
-    //             const status = JSON.parse(response.status);
-    //             if (status == "200") {
-    //                 this.$message({
-    //                     message: h("p", null, [
-    //                         h(
-    //                             "i",
-    //                             { style: "color: teal" },
-    //                             "Cambio realizado con exito!"
-    //                         )
-    //                     ]),
-    //                     type: "success"
-    //                 });
-    //                 this.EditscreenLoading = false;
-    //                 this.formEdit.name = "";
-    //                 this.dialogo = false;
-    //                 this.getAll();
-    //             }
-    //         });
-    // },
+ 
+    editProduct(form) {
+        const h = this.$createElement;
+        this.EditscreenLoading = true;
+        if(this.formEdit.name !== ""){
+          axios
+              .put(this.url_data.editProduct, {
+                  id: this.id_seleccion,
+                  name: this.formEdit.name
+              })
+              .then(response => {
+                  
+                  if (response.data === 1) {
+                      this.$message({
+                          message: h("p", null, [
+                              h(
+                                  "i",
+                                  { style: "color: teal" },
+                                  "Cambio realizado con exito!"
+                              )
+                          ]),
+                          type: "success"
+                      });
+                      this.EditscreenLoading = false;
+                      this.formEdit.name = "";
+                      this.dialogo = false;
+                      this.getProduct();
+                  }
+              });
+        }else{
+          this.EditscreenLoading = false;
+          this.$message({
+              message: h("p", null, [
+                  h(
+                      "i",
+                      { style: "color: teal" },
+                      "Ingrese un dato"
+                  )
+              ]),
+              type: "danger"
+          });
+        }
+    },
     current_change: function (currentPage) {
       this.currentPage = currentPage;
     },
-    handleEdit(producto, desc) {
+    handleEdit(id) {
       this.dialogo = true;
-      this.id_seleccion = producto;
-      this.descripcion_seleccion = desc;
+      this.id_seleccion = id;
+      
     },
     handleDelete(code) {
+      
       const h = this.$createElement;
-      let url = "deleteProductById";
       this.EditscreenLoading = true;
       axios
-        .post(url, {
+        .put(this.url_data.delete, {
           id: code,
         })
         .then((response) => {
-          const status = JSON.parse(response.status);
-          if (status == "200") {
+          
+          if (response.data === 1) {
             this.$message({
               message: h("p", null, [
                 h("i", { style: "color: teal" }, "Producto Eliminado"),
@@ -241,7 +254,7 @@ export default {
             this.EditscreenLoading = false;
             this.formEdit.name = "";
             this.dialogo = false;
-            // this.getAll();
+            this.getProduct();
           }
         });
     },

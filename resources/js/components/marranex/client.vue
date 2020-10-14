@@ -54,7 +54,7 @@
           </el-row>
           <el-row :gutter="10" class="mt-2">
             <el-col :xs="25" :sm="6" :md="8" :lg="20" :xl="12">
-              <el-form-item >
+              <el-form-item>
                 <el-input v-model="form.company">
                   <template slot="prepend">EMPRESA:</template>
                 </el-input>
@@ -83,27 +83,70 @@
             response_data.listClient.slice(
               (currentPage - 1) * pagesize,
               currentPage * pagesize
-            )
+            ).filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))
           "
           style="width: 100%"
           border
-          
         >
-          <el-table-column label="No." header-align="center" type="index"></el-table-column>
-          <el-table-column label="NIT" header-align="center" prop="nit"></el-table-column>
-          <el-table-column label="NOMBRE" header-align="center" prop="name"></el-table-column>
-          <el-table-column label="APELLIDO" header-align="center" prop="surname"></el-table-column>
-          <el-table-column label="EMPRESA" header-align="center" prop="company"></el-table-column>
-          <el-table-column label="DIRECCIÓN" header-align="center" prop="address"></el-table-column>
-          <el-table-column label="DPI" header-align="center" prop="dpi"></el-table-column>
-          <el-table-column label="TELÉFONO" header-align="center" prop="phone"></el-table-column>
-          <el-table-column label="Operaciones" header-align="center" width="200">
+          <el-table-column
+            label="No."
+            header-align="center"
+            type="index"
+          ></el-table-column>
+          <el-table-column
+            label="NIT"
+            header-align="center"
+            prop="nit"
+          ></el-table-column>
+          <el-table-column
+            label="NOMBRE"
+            header-align="center"
+            prop="name"
+          ></el-table-column>
+          <el-table-column
+            label="APELLIDO"
+            header-align="center"
+            prop="surname"
+          ></el-table-column>
+          <el-table-column
+            label="EMPRESA"
+            header-align="center"
+            prop="company"
+          ></el-table-column>
+          <el-table-column
+            label="DIRECCIÓN"
+            header-align="center"
+            prop="address"
+          ></el-table-column>
+          <el-table-column
+            label="DPI"
+            header-align="center"
+            prop="dpi"
+          ></el-table-column>
+          <el-table-column
+            label="TELÉFONO"
+            header-align="center"
+            prop="phone"
+          ></el-table-column>
+          <el-table-column
+            label="Operaciones"
+            header-align="center"
+            width="200"
+          >
+            <template slot="header" slot-scope="scope">
+              <el-input
+                v-model="search"
+                size="mini"
+                placeholder="Buscar"
+              />
+            </template>
             <template slot-scope="scope">
               <el-button
                 size="mini"
+                icon="el-icon-delete-solid"
+                type="danger"
                 @click="handleEdit(scope.row.id)"
-                >Editar</el-button
-              >
+              ></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -156,9 +199,11 @@
 export default {
   data() {
     return {
+      search: '',
       url_data: {
         addClient: "client",
         listClient: "client",
+        deleteCliente: "client",
       },
       response_data: {
         listClient: [],
@@ -239,7 +284,7 @@ export default {
     };
   },
   mounted() {
-      this.getClient();
+    this.getClient();
   },
   methods: {
     onSubmit(form) {
@@ -287,52 +332,49 @@ export default {
       this.$refs[formName].resetFields();
     },
     getClient() {
-        axios.get(this.url_data.listClient)
-        .then(response => {
-            this.response_data.listClient = response.data;
-        });
+      axios.get(this.url_data.listClient).then((response) => {
+        this.response_data.listClient = response.data;
+      });
     },
 
-    // getAll() {
-    //   let url = "allProduct";
-    //   axios.get(this.url_data.show_unit).then((response) => {
-    //     this.response_data.list_unit = response.data;
-    //     this.total = response.data.length;
-    //   });
-    // },
-    // editProduct() {
-    //   const h = this.$createElement;
-    //   let url = "editProduct";
-    //   this.EditscreenLoading = true;
-    //   axios
-    //     .post(url, {
-    //       id: this.id_seleccion,
-    //       new: this.formEdit.name,
-    //     })
-    //     .then((response) => {
-    //       const status = JSON.parse(response.status);
-    //       if (status == "200") {
-    //         this.$message({
-    //           message: h("p", null, [
-    //             h("i", { style: "color: teal" }, "Cambio realizado con exito!"),
-    //           ]),
-    //           type: "success",
-    //         });
-    //         this.EditscreenLoading = false;
-    //         this.formEdit.name = "";
-    //         this.dialogo = false;
-    //         this.getAll();
-    //       }
-    //     });
-    // },
-    
     current_change: function (currentPage) {
       this.currentPage = currentPage;
     },
-    handleEdit(producto, desc) {
-      this.dialogo = true;
-      this.id_seleccion = producto;
-      this.descripcion_seleccion = desc;
+    handleEdit(id) {
+      this.$confirm("Desea eliminar a Cliente?", "Inactivar Cliente", {
+        confirmButtonText: "SI",
+        cancelButtonText: "NO",
+        type: "warning",
+      })
+        .then(() => {
+          axios
+            .put(this.url_data.deleteCliente, {
+              id: id,
+            })
+            .then((response) => {
+              const status = response.data.status;
+              if (response.data === 1) {
+                this.$message({
+                  type: "success",
+                  message: "Cliente Eliminado",
+                });
+
+                this.getClient();
+              }
+            })
+            .catch((err) => {
+              this.$message({
+                type: "danger",
+                message: "Error en Servidor",
+              });
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "Cancelado",
+          });
+        });
     },
     handleDelete(code) {
       const h = this.$createElement;

@@ -23,6 +23,7 @@ class marranexController extends Controller
                 'phone'     =>  $data->phone,
                 'company'   =>  $data->company,
                 'contact'   =>  $data->contact,
+                'status_id' => 1,
             ]);
 
             DB::commit();
@@ -36,9 +37,23 @@ class marranexController extends Controller
 
     public function listClient(){
         
-        $list = client::all();
+        $list = client::select('id','nit','name','surname','address','dpi','phone','company','contact')->where('status_id',1)->get();
 
         return response()->json($list,200);
+    }
+
+    public function deleteClient(Request $request){
+        try {
+            DB::beginTransaction();
+
+            $search = client::where('id',$request->id)->update(['status_id' => 2]);
+
+            DB::commit();
+
+            return response()->json($search,200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+        }
     }
 
     public function addproduct(Request $data){
@@ -47,6 +62,7 @@ class marranexController extends Controller
 
             $product = product::create([
                 'name' =>  $data->name,
+                'status_id' => 1,
             ]);
 
             DB::commit();
@@ -60,8 +76,37 @@ class marranexController extends Controller
     
     public function listProduct(){
         
-        $list = product::all();
+        $list = product::select('id','name')->where(['status_id' => 1])->get();
 
         return response()->json($list,200);
+    }
+
+    public function editProduct(Request $request){
+        try {
+            DB::beginTransaction();
+
+            $update = product::where('id',$request->id)->update(['name' => $request->name]);
+
+            DB::commit();
+
+            return response()->json($update,200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+        }
+    }
+
+    public function deleteProduct(Request $request){
+
+        try {
+                DB::beginTransaction();
+            
+            $delete = product::where('id',$request->id)->update(['status_id' => 2]);
+            
+            DB::commit();
+
+            return response()->json($delete,200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+        }
     }
 }

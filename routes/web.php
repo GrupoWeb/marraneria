@@ -21,31 +21,24 @@ Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout')->name(
 
 // Show View
 Route::get('cliente','marranex@showclient')->name('client');
+Route::get('producto','marranex@showproduct')->name('product'); 
 
 
 // http post
 Route::post('client','marranexController@addclient');
-
+Route::post('product','marranexController@addproduct');
 
 
 // http get
 Route::get('client','marranexController@listClient');
-
+Route::get('productList','marranexController@listProduct'); 
 
 
 // http put
+Route::put('client','marranexController@deleteClient');
+Route::put('product','marranexController@editProduct');
+Route::put('delete','marranexController@deleteProduct');
 
-
-//////////////////////////////////
-Route::get('producto','marranex@showproduct')->name('product'); // este me inmagino que es para la ruta de la vista
-
-// http post
-Route::post('product','marranexController@addproduct'); // este para el add a la base de datos
-
-// http get
-Route::get('productList','marranexController@listProduct'); // este para mostrar lo que ingresaste
-
-// en este caso no pueden ir dos get con el mismo nombre
 
 
 
