@@ -9,12 +9,16 @@ use App\Model\marranex\product;
 
 class marranex extends Controller
 {
-    public function showclient(){
+    public function showClient(){
         return view('marranex.show.client');
     }
 
-    public function showproduct(){
+    public function showProduct(){
         return view('marranex.show.product');
+    }
+
+    public function showChannel(){
+        return view('marranex.show.channel');
     }
 
 

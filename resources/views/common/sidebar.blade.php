@@ -20,7 +20,12 @@
                              <li class="nav">
                                  <a class="nav-link" href="{{ route('product') }}">
                                      <i class="nav-icon fas fa-cart-plus"></i> Producto</a>
-                                    
+
+                             </li>
+                             <li class="nav">
+                                 <a class="nav-link" href="{{ route('channel') }}">
+                                     <i class="nav-icon fas fa-shipping-fast"></i> Canales</a>
+
                              </li>
                              <li class="nav">
                                  <a class="nav-link" href="./showUsuarios">

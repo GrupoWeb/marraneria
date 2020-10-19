@@ -2,7 +2,7 @@
 
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route; 
+use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
@@ -20,18 +20,21 @@ Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout')->name(
 
 
 // Show View
-Route::get('cliente','marranex@showclient')->name('client');
-Route::get('producto','marranex@showproduct')->name('product'); 
+Route::get('cliente','marranex@showClient')->name('client');
+Route::get('producto','marranex@showProduct')->name('product');
+Route::get('canales', 'marranex@showChannel')->name('channel');
 
 
 // http post
 Route::post('client','marranexController@addclient');
 Route::post('product','marranexController@addproduct');
+Route::post('channel', 'marranexController@addChannel');
 
 
 // http get
 Route::get('client','marranexController@listClient');
-Route::get('productList','marranexController@listProduct'); 
+Route::get('productList','marranexController@listProduct');
+Route::get('channel','marranexController@listChannel');
 
 
 // http put
@@ -90,7 +93,7 @@ Route::post('reportInventory','BarCode@BarCodeAllReport');
   /** Printer BarCode */
 
   Route::get('printer/{data_account}','BarCode@BarCodePrinter');
-  Route::get('search','inventario@showSearch'); 
+  Route::get('search','inventario@showSearch');
   Route::get('printCode/{code}','BarCode@GetBarCodeById');
   Route::get('searchCode/{code}','BarCode@GetSearchCodeById');
   Route::get('List','inventario@showList');
@@ -120,7 +123,7 @@ Route::get('testBar','barcode@barTest');
 Route::post('setUnidad','catalogo@setUnidad');
 Route::get('showunidades','catalogo@showUnidad');
 Route::get('getUnit','catalogo@getUnit');
-Route::get('showEntidad','catalogo@showEntidad'); 
+Route::get('showEntidad','catalogo@showEntidad');
 Route::post('setEntidad','catalogo@setEntidad');
 Route::get('showUsuarios','catalogo@showUsuarios');
 Route::get('getUser','catalogo@getUser');
@@ -139,4 +142,3 @@ Route::post('setRoles','catalogo@setRoles');
   Route::get('listaEdificios','catalogo@getEdificios')->name('ListaEdificios');
   Route::put('edicionEdificio','catalogo@editEdificio')->name('EdificionEdificio');
 
-  
