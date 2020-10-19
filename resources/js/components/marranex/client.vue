@@ -5,15 +5,15 @@
       <div class="card-body">
         <el-form ref="form" :model="form" :rules="rules">
           <el-row :gutter="10" class="mt-2">
-            <el-col :xs="25" :sm="6" :md="8" :lg="20" :xl="12">
-              <el-form-item prop="nit">
+            <el-col :xs="25" :sm="6" :md="8" :lg="12" :xl="12">
+              <el-form-item >
                 <el-input v-model="form.nit">
                   <template slot="prepend">NIT:</template>
                 </el-input>
               </el-form-item>
             </el-col>
-            <el-col :xs="25" :sm="6" :md="8" :lg="20" :xl="12">
-              <el-form-item prop="dpi">
+            <el-col :xs="25" :sm="6" :md="8" :lg="12" :xl="12">
+              <el-form-item >
                 <el-input v-model="form.dpi">
                   <template slot="prepend">DPI:</template>
                 </el-input>
@@ -21,14 +21,14 @@
             </el-col>
           </el-row>
           <el-row :gutter="10" class="mt-2">
-            <el-col :xs="25" :sm="6" :md="8" :lg="20" :xl="12">
+            <el-col :xs="25" :sm="6" :md="8" :lg="12" :xl="12">
               <el-form-item prop="name">
                 <el-input v-model="form.name">
                   <template slot="prepend">NOMBRE:</template>
                 </el-input>
               </el-form-item>
             </el-col>
-            <el-col :xs="25" :sm="6" :md="8" :lg="20" :xl="12">
+            <el-col :xs="25" :sm="6" :md="8" :lg="12" :xl="12">
               <el-form-item prop="surname">
                 <el-input v-model="form.surname">
                   <template slot="prepend">APELLIDO:</template>
@@ -37,15 +37,15 @@
             </el-col>
           </el-row>
           <el-row :gutter="10" class="mt-2">
-            <el-col :xs="25" :sm="6" :md="8" :lg="20" :xl="12">
-              <el-form-item prop="address">
+            <el-col :xs="25" :sm="6" :md="8" :lg="12" :xl="12">
+              <el-form-item >
                 <el-input v-model="form.address">
                   <template slot="prepend">DIRECCIÓN:</template>
                 </el-input>
               </el-form-item>
             </el-col>
-            <el-col :xs="25" :sm="6" :md="8" :lg="20" :xl="12">
-              <el-form-item prop="phone">
+            <el-col :xs="25" :sm="6" :md="8" :lg="12" :xl="12">
+              <el-form-item >
                 <el-input v-model="form.phone">
                   <template slot="prepend">TELÉFONO:</template>
                 </el-input>
@@ -53,17 +53,17 @@
             </el-col>
           </el-row>
           <el-row :gutter="10" class="mt-2">
-            <el-col :xs="25" :sm="6" :md="8" :lg="20" :xl="12">
+            <el-col :xs="25" :sm="6" :md="8" :lg="12" :xl="12">
               <el-form-item>
                 <el-input v-model="form.company">
                   <template slot="prepend">EMPRESA:</template>
                 </el-input>
               </el-form-item>
             </el-col>
-            <el-col :xs="25" :sm="6" :md="8" :lg="20" :xl="12">
-              <el-form-item prop="contact">
+            <el-col :xs="25" :sm="6" :md="8" :lg="12" :xl="12">
+              <el-form-item >
                 <el-input v-model="form.contact">
-                  <template slot="prepend">CONTACTO:</template>
+                  <template slot="prepend">% DESCUENTO:</template>
                 </el-input>
               </el-form-item>
             </el-col>
@@ -154,7 +154,7 @@
           <el-pagination
             background
             layout="total,prev, pager, next"
-            :total="total"
+            :total="handlerTable.total"
             @current-change="current_change"
           ></el-pagination>
         </div>
@@ -199,6 +199,9 @@
 export default {
   data() {
     return {
+        handlerTable: {
+            total:0,
+        },
       search: '',
       url_data: {
         addClient: "client",
@@ -226,13 +229,7 @@ export default {
       },
       listProduct: [],
       rules: {
-        nit: [
-          {
-            required: true,
-            message: "Este campo no puede ser vacio",
-            trigger: "blur",
-          },
-        ],
+
         name: [
           {
             required: true,
@@ -241,34 +238,6 @@ export default {
           },
         ],
         surname: [
-          {
-            required: true,
-            message: "Este campo no puede ser vacio",
-            trigger: "blur",
-          },
-        ],
-        dpi: [
-          {
-            required: true,
-            message: "Este campo no puede ser vacio",
-            trigger: "blur",
-          },
-        ],
-        phone: [
-          {
-            required: true,
-            message: "Este campo no puede ser vacio",
-            trigger: "blur",
-          },
-        ],
-        address: [
-          {
-            required: true,
-            message: "Este campo no puede ser vacio",
-            trigger: "blur",
-          },
-        ],
-        contact: [
           {
             required: true,
             message: "Este campo no puede ser vacio",
@@ -334,6 +303,7 @@ export default {
     getClient() {
       axios.get(this.url_data.listClient).then((response) => {
         this.response_data.listClient = response.data;
+          this.handlerTable.total = response.data.length;
       });
     },
 

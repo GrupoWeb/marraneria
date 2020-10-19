@@ -53,6 +53,8 @@ Vue.component('edificios-component', require('./components/admin/edificios.vue')
 // Vue file marranex
 
 Vue.component('client', require('./components/marranex/client.vue').default);
+Vue.component('product', require('./components/marranex/product.vue').default);
+Vue.component('channel', require('./components/marranex/channel.vue').default);
 
 
 

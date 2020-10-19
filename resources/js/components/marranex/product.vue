@@ -50,7 +50,7 @@
           <el-pagination
             background
             layout="total,prev, pager, next"
-            :total="total"
+            :total="handlerTable.total"
             @current-change="current_change"
           ></el-pagination>
         </div>
@@ -90,6 +90,9 @@
 export default {
   data() {
     return {
+        handlerTable: {
+            total:0,
+        },
       url_data: {
         listProduct: "product",
         getList: "productList",
@@ -180,10 +183,11 @@ export default {
     getProduct() {
       axios.get(this.url_data.getList).then((response) => {
         this.response_data.listGet = response.data;
-        
+          this.handlerTable.total = response.data.length;
+
       });
     },
- 
+
     editProduct(form) {
         const h = this.$createElement;
         this.EditscreenLoading = true;
@@ -194,7 +198,7 @@ export default {
                   name: this.formEdit.name
               })
               .then(response => {
-                  
+
                   if (response.data === 1) {
                       this.$message({
                           message: h("p", null, [
@@ -232,10 +236,10 @@ export default {
     handleEdit(id) {
       this.dialogo = true;
       this.id_seleccion = id;
-      
+
     },
     handleDelete(code) {
-      
+
       const h = this.$createElement;
       this.EditscreenLoading = true;
       axios
@@ -243,7 +247,7 @@ export default {
           id: code,
         })
         .then((response) => {
-          
+
           if (response.data === 1) {
             this.$message({
               message: h("p", null, [
