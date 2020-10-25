@@ -136,4 +136,9 @@ class marranexController extends Controller
 
         return response()->json($data,200);
     }
+
+    public function productById(Request $request){
+        $product = product::select('id','name')->where(['id' => $request->id])->get();
+        return response()->json($product,200);
+    }
 }

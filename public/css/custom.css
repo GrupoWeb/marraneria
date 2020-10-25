@@ -35,6 +35,10 @@ body{
     width:100% !important;
 }
 
+.total{
+    font-size: 2em;
+}
+
 /*
 .color_institucional{
     background-color: #ff473e !important;

@@ -30,6 +30,7 @@ Route::get('venta', 'marranex@showSale')->name('sale');
 Route::post('client','marranexController@addclient');
 Route::post('product','marranexController@addproduct');
 Route::post('channel', 'marranexController@addChannel');
+Route::post('productByID','marranexController@productById');
 
 
 // http get

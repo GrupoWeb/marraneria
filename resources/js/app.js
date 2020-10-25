@@ -17,8 +17,19 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import locale from 'element-ui/lib/locale/lang/es';
 import VueBarcodeScanner from 'vue-barcode-scanner'
+import VueCurrencyFilter from 'vue-currency-filter'
+
+
 Vue.use(ElementUI,{locale});
 Vue.use(VueBarcodeScanner);
+Vue.use(VueCurrencyFilter, {
+    symbol: 'Q', // El símbolo, por ejemplo €
+    thousandsSeparator: ',', // Separador de miles
+    fractionCount: 2, // ¿Cuántos decimales mostrar?
+    fractionSeparator: '.', // Separador de decimales
+    symbolPosition: 'front', // Posición del símbolo. Puede ser al inicio ('front') o al final ('') es decir, si queremos que sea al final, en lugar de front ponemos una cadena vacía ''
+    symbolSpacing: true // Indica si debe poner un espacio entre el símbolo y la cantidad
+})
 
 /**
  * The following block of code may be used to automatically register your
