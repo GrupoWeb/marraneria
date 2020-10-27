@@ -24,6 +24,7 @@ Route::get('cliente','marranex@showClient')->name('client');
 Route::get('producto','marranex@showProduct')->name('product');
 Route::get('canales', 'marranex@showChannel')->name('channel');
 Route::get('venta', 'marranex@showSale')->name('sale');
+Route::get('inventario','marranex@showInventory')->name('inventory');
 
 
 // http post

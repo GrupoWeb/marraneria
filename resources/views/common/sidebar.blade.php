@@ -33,6 +33,10 @@
                                     {{-- <i class="nav-icon far fa-chart-bar"></i> Ventas</a> --}}
                              </li>
                              <li class="nav">
+                                 <a class="nav-link" href="{{  route('inventory') }}">
+                                     <i class="nav-icon fas fa-ticket-alt"></i> Inventario</a>
+                             </li>
+                             <li class="nav">
                                  <a class="nav-link" href="./edificios">
                                      <i class="nav-icon fas fa-chart-line"></i> Reporte</a>
                              </li>
@@ -41,10 +45,6 @@
                                      {{-- <i class="nav-icon far fa-chart-bar"></i> Total Deuda</a> --}}
                                      <i class="nav-icon far fa-chart-bar"></i> Deuda</a>
                              </li>
-                             {{-- <li class="nav">
-                                 <a class="nav-link" href="./edificios">
-                                     <i class="nav-icon fas fa-ticket-alt"></i> Deuda Clientes</a>
-                             </li> --}}
                              {{-- <li class="nav">
                                  <a class="nav-link" href="./visualizar">
                                      <i class="nav-icon fas fa-dolly-flatbed"></i> Importar</a>

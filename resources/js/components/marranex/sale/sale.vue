@@ -84,7 +84,7 @@
                             <el-divider></el-divider>
                             <el-row>
                                 <el-col :span="24">
-                                    <el-table ref="multipleTable" :data="handledProduct" style="width: 100%" border stripe 
+                                    <el-table ref="multipleTable" :data="handledProduct" style="width: 100%" border stripe
 
                                     >
                                         <el-table-column  width="60">
