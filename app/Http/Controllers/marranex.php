@@ -21,5 +21,12 @@ class marranex extends Controller
         return view('marranex.show.channel');
     }
 
+    public function showSale(){
+        return view('marranex.show.sale');
+    }
+
+    public function showInventory(){
+        return view('marranex.show.inventory');
+    }
 
 }

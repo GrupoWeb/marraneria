@@ -19,7 +19,7 @@
                              </li>
                              <li class="nav">
                                  <a class="nav-link" href="{{ route('product') }}">
-                                     <i class="nav-icon fas fa-cart-plus"></i> Producto</a>
+                                     <i class="nav-icon fas fa-cart-plus"></i> Productos</a>
 
                              </li>
                              <li class="nav">
@@ -28,9 +28,13 @@
 
                              </li>
                              <li class="nav">
-                                 <a class="nav-link" href="./showUsuarios">
+                                 <a class="nav-link" href="{{ route('sale') }}">
                                     <i class="nav-icon fas fa-store"></i> Ventas</a>
                                     {{-- <i class="nav-icon far fa-chart-bar"></i> Ventas</a> --}}
+                             </li>
+                             <li class="nav">
+                                 <a class="nav-link" href="{{  route('inventory') }}">
+                                     <i class="nav-icon fas fa-ticket-alt"></i> Inventario</a>
                              </li>
                              <li class="nav">
                                  <a class="nav-link" href="./edificios">
@@ -41,10 +45,6 @@
                                      {{-- <i class="nav-icon far fa-chart-bar"></i> Total Deuda</a> --}}
                                      <i class="nav-icon far fa-chart-bar"></i> Deuda</a>
                              </li>
-                             {{-- <li class="nav">
-                                 <a class="nav-link" href="./edificios">
-                                     <i class="nav-icon fas fa-ticket-alt"></i> Deuda Clientes</a>
-                             </li> --}}
                              {{-- <li class="nav">
                                  <a class="nav-link" href="./visualizar">
                                      <i class="nav-icon fas fa-dolly-flatbed"></i> Importar</a>

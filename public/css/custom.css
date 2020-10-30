@@ -10,7 +10,36 @@ body{
     background-color: #ededed !important;
 }
 
-/* 
+.nameF, .numberF, .formatF{
+    font-size: 2.1em;
+}
+
+.numberF{
+    color:Red;
+    font-weight: bold;
+
+}
+
+.now{
+    font-size: 1rem;
+}
+
+.col-f{
+    margin:0;
+    padding:0;
+    border: 1px solid #000;
+    background-color: #fea;
+}
+
+.select_width{
+    width:100% !important;
+}
+
+.total{
+    font-size: 2em;
+}
+
+/*
 .color_institucional{
     background-color: #ff473e !important;
 }
@@ -42,9 +71,7 @@ body{
     text-align:center !important;
 }
 
-.select_width{
-    width:100% !important;
-}
+
 
 .BarCode{
     width: 50%;
