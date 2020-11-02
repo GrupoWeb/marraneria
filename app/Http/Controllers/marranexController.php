@@ -232,6 +232,7 @@ class marranexController extends Controller
             $sales->tipoOperacion = $request->type;
             $sales->total = $request->total;
             $sales->save();
+            $idSale = $sales->id;
     
             $sales_id = $sales->id;
             
@@ -258,7 +259,7 @@ class marranexController extends Controller
 
             DB::commit();
     
-            return response()->json(true,200);
+            return response()->json($request->envio,200);
 
         } catch (\Throwable $th) {
             DB::rollback();
@@ -266,5 +267,125 @@ class marranexController extends Controller
             return response()->json(false, 200);
         }
     }
+
+    public function GetBarCodeById(Request $request){
+
+        $sales = sales::select('sales.id','sales.envio as code','clients.name as cliente','sales.tipoOperacion as tipo','sales.created_at as fecha','sales.total')->where(['envio' => $request->id])
+            ->join('clients','clients.id','=','sales.cliente_id')
+            ->get();
+
+        $detalle = detailMaster::select('products.name as producto','detail_masters.cantidad','detail_masters.precio','detail_masters.descuento','detail_masters.subtotal')->where(['sales_id' => $sales[0]->id])
+            ->join('products','products.id','=','detail_masters.producto_id')
+            ->get();
+
+        // dd($detalle);
+
+
+            $html = '
+            <!DOCTYPE html>
+                <html lang="es">
+                <head>
+                    <link rel="stylesheet" href="./bs3.min.css">
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+                    <title>Envios Marranex</title>
+                </head>
+                <body>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xs-10 ">
+                            <h1>Envio</h1>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-xs-2 text-center">
+                            <strong>Fecha: '.  $sales[0]->fecha.'</strong>
+                            <br>
+                            <br>
+                            <strong>Envio No. '.  $sales[0]->code.'</strong>
+                            <br>
+                            
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row text-center" style="margin-bottom: 2rem;">
+                        <div class="col-xs-6">
+                            <h1 class="h2">Cliente: '.  $sales[0]->cliente.'</h1>
+                        </div>
+                    </div>
+                    <div class="row text-center" style="margin-bottom: 2rem;">
+                        <div class="col-xs-6">
+                            <h1 class="h2">Operación: '.  $sales[0]->tipo.'</h1>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <table class="table table-condensed table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Descripción</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio unitario</th>
+                                    <th>SubTotal</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                ';
+                                
+                                foreach ($detalle as $key) {
+                                    $html .= '<td>'.$key->producto.'</td>';
+                                    $html .= '<td>'.$key->cantidad.'</td>';
+                                    $html .= '<td> Q. '.$key->precio.'</td>';
+                                    $html .= '<td> Q.'.$key->subtotal.'</td>';
+                                }
+
+                                $html .='
+                                </tr>
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-right">
+                                        <h4>Total</h4></td>
+                                    <td>
+                                        <h4>Q. '.$sales[0]->total.'</h4>
+                                    </td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <p class="h5"></p>
+                        </div>
+                    </div>
+                </div>
+                </body>
+                </html>
+            ';
+
+
+        
+
+        $pdf = \PDF::loadHtml($html);
+        $html2 = 'test';
+        // $paper_size = array(0,0,144,308);
+        // $pdf->setPaper($paper_size, 'landscape');
+        // $pdf->setOptions(['dpi' => 120, 'defaultFont' => 'sans-serif']);
+        // return $pdf->stream("Códigos de Barra".'.pdf'); 
+        $path = public_path('pdf/');
+        $fileName =  'Envio No '.$sales[0]->code . '.' . 'pdf' ;
+        $pdf->save($path . '/' . $fileName);
+        // return $pdf->stream($fileName);
+        // return $pdf->output();
+        return $fileName;
+        
+    }
+
 
 }

@@ -221,6 +221,27 @@
             >
           </el-form-item>
         </el-form>
+                    <el-drawer
+              title="Documento"
+              :visible.sync="drawer"
+              :with-header="false"
+              :modal="false"
+            >
+              <embed
+                :src="src"
+                type="application/pdf"
+                width="100%"
+                height="100%"
+              />
+              <!-- <el-alert
+                title="Sin Documentos"
+                type="error"
+                description="no se ha cargado ningun archivo"
+                show-icon
+                v-if="verError"
+              >
+              </el-alert> -->
+            </el-drawer>
       </div>
     </div>
   </div>
@@ -231,6 +252,8 @@ export default {
   props: ["envio"],
   data() {
     return {
+      drawer: false,
+      src: "",
       showInfo: false,
       loading: true,
       loadingAll: false,
@@ -276,6 +299,7 @@ export default {
         clientById: "clientById",
         getNumberShipping: "getNumberShipping/",
         addSales:"addSales",
+        salePDF: "salePDF"
       },
       handledResponse: {
         listProduct: [],
@@ -296,6 +320,7 @@ export default {
     this.nowData();
     // this.getShipping();
     this.handledText.numberF = this.envio;
+    this.src = "./../pdf/Envio No 2.pdf";
   },
   methods: {
     onSubmit(form) {
@@ -313,24 +338,24 @@ export default {
               envio: this.handledText.numberF,
             })
             .then((response) => {
-              if (response.data !== false) {
-                this.$message({
-                  message: h("p", null, [
-                    h("i", { style: "color: teal" }, "Registrado"),
-                  ]),
-                  type: "success",
-                });
-                // this.handler.handlerLoading.fullscreenLoading = false;
-                this.loadingAll = false;
-                this.handledButton = true;
-                // this.getChannel();
-                // this.resetForm(form);
-                // this.showInfo = false;
-                // this.handledResponse.tableClientById = [];
-                // this.handledProduct = [];
-                // this.totalCurrent = 0;
+              console.log(response.data)
+              axios.post(this.handledList.salePDF,{
+                id: this.handledText.numberF
+              }).then(response => {
+                this.drawer = true;
+                this.src = "./../pdf/"+ response.data;
+                
+                  this.$message({
+                    message: h("p", null, [
+                      h("i", { style: "color: teal" }, "Registrado"),
+                    ]),
+                    type: "success",
+                  });
+                  this.loadingAll = false;
+                  this.handledButton = true;
+                
 
-              }
+              })
             });
         }
       });

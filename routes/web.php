@@ -35,6 +35,7 @@ Route::post('productByID','marranexController@productById');
 Route::post('tableInventory','marranexController@addKardex');
 Route::post('clientById','marranexController@clientById');
 Route::post('addSales','marranexController@addSales');
+Route::post('salePDF','marranexController@GetBarCodeById');
 
 // http get
 Route::get('client','marranexController@listClient');
