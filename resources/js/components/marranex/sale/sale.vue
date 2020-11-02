@@ -1,7 +1,7 @@
 <template>
   <div class="sale">
     <div class="card">
-      <div class="card-header text-white franja">Facturación</div>
+      <div class="card-header text-white franja">Envios</div>
       <div class="card-body">
         <el-row :gutter="20" class="mt-2">
           <el-col :xs="25" :sm="6" :md="19" :xl="19">
@@ -54,11 +54,14 @@
                     :value="item.id"
                   ></el-option>
                 </el-select>
-                <!-- <template slot="prepend">Nombre Cliente:</template> -->
-                <!-- <el-button slot="append" icon="el-icon-search"></el-button> -->
-                <!-- </el-input> -->
               </el-form-item>
               <div v-if="showInfo" v-loading="loading">
+                <el-form-item label="Tipo">
+                  <el-radio-group v-model="form.type">
+                    <el-radio label="Credito"></el-radio>
+                    <el-radio label="Contado"></el-radio>
+                  </el-radio-group>
+                </el-form-item>
                 <div class="ml-3 mb-3">Informacion de Cliente:</div>
                 <el-table :data="handledResponse.tableClientById" border>
                   <el-table-column prop="nit" label="NIT"></el-table-column>
@@ -133,9 +136,9 @@
                     size="small"
                     :loading="addload"
                     @click="addItem"
+                    :disabled="handledButton"
                     >Añadir</el-button
                   >
-                  <!--                                    <el-button  type="danger" size="small" icon="el-icon-delete" circle :loading="load"></el-button>-->
                 </el-col>
               </el-row>
               <el-divider></el-divider>
@@ -208,6 +211,15 @@
               </el-row>
             </el-tab-pane>
           </el-tabs>
+          <el-form-item>
+            <el-button type="primary" class="mt-3" @click="onSubmit('form')" :disabled="handledButton" 
+                v-loading.fullscreen.lock="loadingAll"
+                element-loading-text="Loading..."
+                element-loading-spinner="el-icon-loading"
+                element-loading-background="rgba(0, 0, 0, 0.8)"
+              >Facturar</el-button
+            >
+          </el-form-item>
         </el-form>
       </div>
     </div>
@@ -216,13 +228,16 @@
 
 <script>
 export default {
-  props: {},
+  props: ["envio"],
   data() {
     return {
       showInfo: false,
       loading: true,
+      loadingAll: false,
       form: {
         name: "",
+        type: "",
+        
       },
       rules: {
         name: [
@@ -234,7 +249,7 @@ export default {
         ],
       },
       handledText: {
-        nameF: "FACTURA",
+        nameF: "ENVIO:",
         numberF: "000000",
       },
       handledImage: {
@@ -243,7 +258,7 @@ export default {
       },
       handledDate: {
         now: "Guatemala, 24 de octubre del 2020",
-        mes:"",
+        mes: "",
       },
       handledProduct: [],
       handledItemTable: {
@@ -259,6 +274,8 @@ export default {
         productByID: "productByID",
         getClient: "client",
         clientById: "clientById",
+        getNumberShipping: "getNumberShipping/",
+        addSales:"addSales",
       },
       handledResponse: {
         listProduct: [],
@@ -267,63 +284,105 @@ export default {
       },
       addload: false,
       totalCurrent: 0,
+      table: "sales",
+      handledButton: false,
+
+
     };
   },
   mounted() {
     this.listProduct();
     this.getClientes();
     this.nowData();
+    // this.getShipping();
+    this.handledText.numberF = this.envio;
   },
   methods: {
-      nowData(){
-          const hoy = new Date();
-          const dia = hoy.getDate();
-          const mes = hoy.getMonth();
-          const anio = hoy.getFullYear(); 
+    onSubmit(form) {
+      const h = this.$createElement;
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          // this.handler.handlerLoading.fullscreenLoading = true;
+          this.loadingAll = true;
+          axios
+            .post(this.handledList.addSales, {
+              client: this.form.name,
+              type: this.form.type,
+              product: this.handledProduct,
+              total: this.totalCurrent,
+              envio: this.handledText.numberF,
+            })
+            .then((response) => {
+              if (response.data !== false) {
+                this.$message({
+                  message: h("p", null, [
+                    h("i", { style: "color: teal" }, "Registrado"),
+                  ]),
+                  type: "success",
+                });
+                // this.handler.handlerLoading.fullscreenLoading = false;
+                this.loadingAll = false;
+                this.handledButton = true;
+                // this.getChannel();
+                // this.resetForm(form);
+                // this.showInfo = false;
+                // this.handledResponse.tableClientById = [];
+                // this.handledProduct = [];
+                // this.totalCurrent = 0;
 
-          switch(mes){
-              case 0:
-                  this.handledDate.mes = "Enero"
-                  break;
-              case 1:
-                  this.handledDate.mes = "Febrero"
-                  break;
-              case 2:
-                  this.handledDate.mes = "Marzo"
-                  break;
-              case 3:
-                  this.handledDate.mes = "Abril"
-                  break;
-              case 4:
-                  this.handledDate.mes = "Mayo"
-                  break;
-              case 5:
-                  this.handledDate.mes = "Junio"
-                  break;
-              case 6:
-                  this.handledDate.mes = "Julio"
-                  break;
-              case 7:
-                  this.handledDate.mes = "Agosto"
-                  break;
-              case 8:
-                  this.handledDate.mes = "Septiembre"
-                  break;
-              case 9:
-                  this.handledDate.mes = "Octubre"
-                  break;
-              case 10:
-                  this.handledDate.mes = "Noviembre"
-                  break;
-              case 11:
-                  this.handledDate.mes = "Diciembre"
-                  break;
-          }
+              }
+            });
+        }
+      });
+    },
+    nowData() {
+      const hoy = new Date();
+      const dia = hoy.getDate();
+      const mes = hoy.getMonth();
+      const anio = hoy.getFullYear();
 
-          
-          this.handledDate.now = 'Guatemala, ' + dia + ' de ' + this.handledDate.mes + ' del ' + anio;
+      switch (mes) {
+        case 0:
+          this.handledDate.mes = "Enero";
+          break;
+        case 1:
+          this.handledDate.mes = "Febrero";
+          break;
+        case 2:
+          this.handledDate.mes = "Marzo";
+          break;
+        case 3:
+          this.handledDate.mes = "Abril";
+          break;
+        case 4:
+          this.handledDate.mes = "Mayo";
+          break;
+        case 5:
+          this.handledDate.mes = "Junio";
+          break;
+        case 6:
+          this.handledDate.mes = "Julio";
+          break;
+        case 7:
+          this.handledDate.mes = "Agosto";
+          break;
+        case 8:
+          this.handledDate.mes = "Septiembre";
+          break;
+        case 9:
+          this.handledDate.mes = "Octubre";
+          break;
+        case 10:
+          this.handledDate.mes = "Noviembre";
+          break;
+        case 11:
+          this.handledDate.mes = "Diciembre";
+          break;
+      }
 
-      },
+      this.handledDate.now =
+        "Guatemala, " + dia + " de " + this.handledDate.mes + " del " + anio;
+    },
     clienteInput() {
       axios
         .post(this.handledList.clientById, { id: this.form.name })
@@ -373,6 +432,7 @@ export default {
             id: this.handledItemTable.productItem,
           })
           .then((response) => {
+            console.log(response.data)
             this.handledProduct.push({
               code: response.data[0].id,
               description: response.data[0].name,

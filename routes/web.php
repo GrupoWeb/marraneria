@@ -34,7 +34,7 @@ Route::post('channel', 'marranexController@addChannel');
 Route::post('productByID','marranexController@productById');
 Route::post('tableInventory','marranexController@addKardex');
 Route::post('clientById','marranexController@clientById');
-
+Route::post('addSales','marranexController@addSales');
 
 // http get
 Route::get('client','marranexController@listClient');
@@ -42,8 +42,7 @@ Route::get('productList','marranexController@listProduct');
 Route::get('channel','marranexController@listChannel');
 Route::get('measureList','marranexController@listMeasure');
 Route::get('tableInventory','marranexController@listInventory');
-
-
+Route::get('getNumberShipping/{table}','marranexController@getNumberShipping');
 
 // http put
 Route::put('client','marranexController@deleteClient');

@@ -3,7 +3,7 @@
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-md-12">
-                <sale></sale>
+                <sale :envio ="{{ $id }}"></sale>
             </div>
         </div>
     </div>
