@@ -334,18 +334,18 @@ class marranexController extends Controller
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
+                                
                                 ';
                                 
                                 foreach ($detalle as $key) {
-                                    $html .= '<td>'.$key->producto.'</td>';
+                                    $html .= '<tr><td>'.$key->producto.'</td>';
                                     $html .= '<td>'.$key->cantidad.'</td>';
                                     $html .= '<td> Q. '.$key->precio.'</td>';
-                                    $html .= '<td> Q.'.$key->subtotal.'</td>';
+                                    $html .= '<td> Q.'.$key->subtotal.'</td></tr>';
                                 }
 
                                 $html .='
-                                </tr>
+                                
                                 </tbody>
                                 <tfoot>
                                 <tr>

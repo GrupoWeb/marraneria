@@ -219,7 +219,11 @@
                 element-loading-background="rgba(0, 0, 0, 0.8)"
               >Facturar</el-button
             >
+            <el-button type="success"  @click="showPDF()" v-show="pdfB"  
+              >PDF</el-button
+            >
           </el-form-item>
+
         </el-form>
                     <el-drawer
               title="Documento"
@@ -252,6 +256,7 @@ export default {
   props: ["envio"],
   data() {
     return {
+      pdfB: false,
       drawer: false,
       src: "",
       showInfo: false,
@@ -320,9 +325,12 @@ export default {
     this.nowData();
     // this.getShipping();
     this.handledText.numberF = this.envio;
-    this.src = "./../pdf/Envio No 2.pdf";
+    
   },
   methods: {
+    showPDF(){
+      this.drawer = true;
+    },
     onSubmit(form) {
       const h = this.$createElement;
       this.$refs[form].validate((valid) => {
@@ -344,6 +352,7 @@ export default {
               }).then(response => {
                 this.drawer = true;
                 this.src = "./../pdf/"+ response.data;
+                this.pdfB = true;
                 
                   this.$message({
                     message: h("p", null, [
