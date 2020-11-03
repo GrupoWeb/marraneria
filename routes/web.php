@@ -26,6 +26,7 @@ Route::get('canales', 'marranex@showChannel')->name('channel');
 Route::get('venta', 'marranex@showSale')->name('sale');
 Route::get('inventario','marranex@showInventory')->name('inventory');
 Route::get('enviosR','marranex@reporteEnvio')->name('enviosR');
+Route::get('deudas','marranex@showDebts')->name('deuda');
 
 
 // http post
@@ -33,10 +34,14 @@ Route::post('client','marranexController@addclient');
 Route::post('product','marranexController@addproduct');
 Route::post('channel', 'marranexController@addChannel');
 Route::post('productByID','marranexController@productById');
+Route::post('InventoryProductById','marranexController@InventoryProductById');
 Route::post('tableInventory','marranexController@addKardex');
 Route::post('clientById','marranexController@clientById');
 Route::post('addSales','marranexController@addSales');
 Route::post('salePDF','marranexController@GetBarCodeById');
+Route::post('getCredits','marranexController@dataSalesBibt');
+Route::post('acreditar','marranexController@acreditar');
+Route::post('acreditacionesInfo','marranexController@acreditacionesInfo');
 
 // http get
 Route::get('client','marranexController@listClient');
@@ -44,8 +49,11 @@ Route::get('productList','marranexController@listProduct');
 Route::get('channel','marranexController@listChannel');
 Route::get('measureList','marranexController@listMeasure');
 Route::get('tableInventory','marranexController@listInventory');
+Route::get('tableInventoryTable','marranexController@listInventoryTable');
 Route::get('getNumberShipping/{table}','marranexController@getNumberShipping');
 Route::get('getSales','marranexController@getSales');
+Route::get('deudaCredito','marranexController@getSalesBibt');
+Route::get('banksList','marranexController@banksList');
 
 // http put
 Route::put('client','marranexController@deleteClient');

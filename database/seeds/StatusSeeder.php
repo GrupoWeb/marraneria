@@ -20,5 +20,16 @@ class StatusSeeder extends Seeder
         $data = new estados;
         $data->name = 'Inactivo';
         $data->save();
+
+        $data->name = 'Credito';
+        $data->save();
+
+        $data = new estados;
+        $data->name = 'Contado';
+        $data->save();
+
+        $data = new estados;
+        $data->name = 'Pagado';
+        $data->save();
     }
 }

@@ -41,8 +41,7 @@
                                      <i class="nav-icon fas fa-chart-line"></i> Reporte Envios</a>
                              </li>
                              <li class="nav">
-                                 <a class="nav-link" href="./edificios">
-                                     {{-- <i class="nav-icon far fa-chart-bar"></i> Total Deuda</a> --}}
+                                 <a class="nav-link" href="{{ route('deuda') }}">
                                      <i class="nav-icon far fa-chart-bar"></i> Deuda</a>
                              </li>
                              {{-- <li class="nav">

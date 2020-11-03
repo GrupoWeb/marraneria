@@ -1,28 +1,21 @@
 
 <template>
   <div class="card">
-    <div class="card-header text-white franja ">Listado de Envios</div>
+    <div class="card-header text-white franja">Listado de Envios</div>
     <div class="card-body">
-      <el-button
+      <!-- <el-button
         class="my-5"
         type="success"
         icon="el-icon-printer"
         @click="download"
-      ></el-button>
+      ></el-button> -->
 
       <el-table
         :data="
           list_response.documentos
-            .slice((currentPage - 1) * pagesize, currentPage * pagesize)
-            .filter(
-              (data) =>
-                !search ||
-                data.fecha.toLowerCase().includes(search.toLowerCase())
-            )
         "
         style="width: 100%"
         border
-        height="450"
         ref="filterInfo"
         @filter-change="datos"
       >
@@ -32,23 +25,24 @@
           width="100"
           prop="code"
           header-align="center"
-          column-key="empresa"
+          column-key="envio"
           :filters="handlerFilter.empresa"
           :filter-method="filterData"
         ></el-table-column>
         <el-table-column
           label="CLIENTE"
-          width="300"
           prop="cliente"
+          width="300"
           header-align="center"
-          column-key="correlativo"
-          :filters="handlerFilter.correlativo"
-          :filter-method="filterCorrelativo"
         ></el-table-column>
         <el-table-column
           label="TIPO"
+          width="100"
           prop="tipo"
           header-align="center"
+          column-key="tipo"
+          :filters="handlerFilter.correlativo"
+          :filter-method="filterCorrelativo"
         ></el-table-column>
         <el-table-column
           label="FECHA"
@@ -63,21 +57,24 @@
         </el-table-column>
         <el-table-column
           label="TOTAL"
-          prop="total"
+          
           header-align="center"
-        ></el-table-column>
-        <!-- <el-table-column label="Estado"  prop="estado"></el-table-column> -->
+        >
+          <template slot-scope="scope">
+            {{ scope.row.total | currency }}
+          </template>
+        </el-table-column>
         <el-table-column label="Operaciones" width="180" header-align="center">
-          <template slot="header">
+          <!-- <template slot="header">
             <el-input
               v-model="search"
               size="mini"
               placeholder="Type to search"
             />
-          </template>
+          </template> -->
           <template slot-scope="scope" class="pl-3">
             <el-button
-              @click="showDrawer(scope.row.correlativo)"
+              @click="showDrawer(scope.row.code)"
               type="primary"
               style="margin-left: 16px"
               plain
@@ -109,14 +106,14 @@
         </el-table-column>
       </el-table>
 
-      <div style="text-align: left; margin-top: 30px">
+      <!-- <div style="text-align: left; margin-top: 30px">
         <el-pagination
           background
           layout="total,prev, pager, next"
           :total="total"
           @current-change="current_change"
         ></el-pagination>
-      </div>
+      </div> -->
     </div>
     <div v-show="ver">
       <div v-if="handlerData === false">
@@ -182,7 +179,6 @@
 </style>
 
 <script>
-
 export default {
   data() {
     return {
@@ -198,7 +194,7 @@ export default {
         trasladar: "Trasladar",
         info: "infoPDF",
         comentario: "getComentario",
-        getFiles: "getNameFiles",
+        getFiles: "salePDF",
       },
       list_response: {
         documentos: [],
@@ -326,17 +322,21 @@ export default {
         this.list_response.documentos = response.data;
         this.infoAll = true;
         this.total = response.data.length;
-        // for (let index = 0; index < this.total; index++) {
-        //   this.handlerFilter.empresa.push({
-        //     text: response.data[index].empresa,
-        //     value: response.data[index].empresa,
-        //   });
-        //   this.handlerFilter.correlativo.push({
-        //     text: response.data[index].correlativo,
-        //     value: response.data[index].correlativo,
-        //   });
-        //   // const element = array[index];
-        // }
+        for (let index = 0; index < this.total; index++) {
+          this.handlerFilter.empresa.push({
+            text: response.data[index].code,
+            value: response.data[index].code,
+          });
+          
+        }
+        this.handlerFilter.correlativo.push({
+          text: "Credito",
+          value: "Credito",
+        });
+        this.handlerFilter.correlativo.push({
+          text: "Contado",
+          value: "Contado",
+        });
       });
     },
     getTraslado(id, dependencia) {
@@ -392,33 +392,31 @@ export default {
       this.handlerDialog.preview.visible = true;
       this.datacoment.idDocumento = code;
       this.datacoment.idTraslado = traslado;
-      this.getComentario(code, traslado);
-      this.getNameFiles(correlativo);
+      // this.getComentario(code, traslado);
+      // this.getNameFiles(correlativo);
     },
     filterData(value, row) {
       // this.list_response.listFilter = [];
       // if(row.empresa === value){
       //   console.log(this.list_response.documentos)
       // }
-      return row.empresa === value;
+      return row.code === value;
     },
     filterCorrelativo(value, row) {
-      return row.correlativo === value;
-      
+      return row.tipo === value;
     },
     datos(row) {
       
-      if (row.empresa && row.empresa.length > 0) {
+      if (row.envio && row.envio.length > 0) {
         this.list_response.listFilter = [];
-        for (let filtro = 0; filtro < row.empresa.length; filtro++) {
+        for (let filtro = 0; filtro < row.envio.length; filtro++) {
           for (
             let index = 0;
             index < this.list_response.documentos.length;
             index++
           ) {
             if (
-              this.list_response.documentos[index].empresa ===
-              row.empresa[filtro]
+              this.list_response.documentos[index].code === row.envio[filtro]
             ) {
               this.list_response.listFilter.push({
                 data: this.list_response.documentos[index],
@@ -429,17 +427,16 @@ export default {
         this.handlerData = true;
         this.infoAll = false;
         this.infoFilter = true;
-      } else if (row.correlativo && row.correlativo.length > 0) {
+      } else if (row.tipo && row.tipo.length > 0) {
         this.list_response.listFilter = [];
-        for (let filtro = 0; filtro < row.correlativo.length; filtro++) {
+        for (let filtro = 0; filtro < row.tipo.length; filtro++) {
           for (
             let index = 0;
             index < this.list_response.documentos.length;
             index++
           ) {
             if (
-              this.list_response.documentos[index].correlativo ===
-              row.correlativo[filtro]
+              this.list_response.documentos[index].tipo === row.tipo[filtro]
             ) {
               this.list_response.listFilter.push({
                 data: this.list_response.documentos[index],
@@ -456,37 +453,9 @@ export default {
         this.infoFilter = false;
       }
     },
-    getNameFiles(correlativo) {
-      this.src = "";
-      axios
-        .post(this.url_list.getFiles, {
-          correlativoD: correlativo,
-        })
-        .then((response) => {
-          
-          
-          if (response.data.length > 0) {
-            this.limitNumber = 2;
-            this.numberFiles = response.data.length;
-            this.src = "./../files/" + response.data[0].name + ".pdf";
-          }else{
-            this.src = "";
-            this.verError = true;
-          }
-        }).catch(error => {
-          this.src = "";
-          this.verError = true;
-          
-        })
-    },
     showDrawer(correlativo) {
       this.drawer = true;
-      this.getNameFiles(correlativo);
-      
-        // this.src = "./../files/" + correlativo + ".pdf";
-      
-        // this.verError = true;
-      
+      this.src = "./../pdf/Envio No " + correlativo + ".pdf";
     },
   },
 };

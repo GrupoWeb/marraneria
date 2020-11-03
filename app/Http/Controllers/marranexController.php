@@ -12,6 +12,9 @@ use App\Model\marranex\inventario;
 use App\Model\marranex\sequences;
 use App\Model\marranex\detailMaster;
 use App\Model\marranex\sales;
+use App\Model\marranex\credit;
+use App\Model\marranex\bank;
+use App\Model\marranex\detailCredit;
 
 
 
@@ -161,6 +164,17 @@ class marranexController extends Controller
         $inventory = inventario::selectRaw('inventarios.id as code, products.id as codeProduct, products.name as producto, medidas.nombre as medida, inventarios.cantidadMinima as cantidadMinima, inventarios.saldo')
             ->join('products','products.id','=','inventarios.producto_id')
             ->join('medidas','medidas.id','=','inventarios.medida_id')
+            ->where('inventarios.saldo','>','2')
+            ->get();
+
+            return response()->json($inventory, 200);
+    }
+
+    public function listInventoryTable(){
+        $inventory = inventario::selectRaw('inventarios.id as code, products.id as codeProduct, products.name as producto, medidas.nombre as medida, inventarios.cantidadMinima as cantidadMinima, inventarios.saldo')
+            ->join('products','products.id','=','inventarios.producto_id')
+            ->join('medidas','medidas.id','=','inventarios.medida_id')
+            
             ->get();
 
             return response()->json($inventory, 200);
@@ -191,6 +205,24 @@ class marranexController extends Controller
     public function productById(Request $request){
         $product = product::select('id','name')->where(['id' => $request->id])->get();
         return response()->json($product,200);
+    }
+
+    public function InventoryProductById(Request $request){
+
+        
+
+        $data = inventario::select('products.id','products.name','inventarios.saldo')
+            ->join('products','products.id','=','inventarios.producto_id')
+            ->where(['products.id' => $request->id])
+            ->get();
+
+        $saldo = $data[0]->saldo;
+            if($saldo >= 2){
+                return response()->json($data,200);
+            }else{
+                return response()->json(false, 200);
+            }
+        
     }
 
     public function getNumberShipping($tabla){
@@ -233,6 +265,11 @@ class marranexController extends Controller
             $sales->total = $request->total;
             $sales->save();
             $idSale = $sales->id;
+
+            $credit = new credit;
+            $credit->sales_id = $idSale;
+            $credit->status_id = 3;
+            $credit->save();
     
             $sales_id = $sales->id;
             
@@ -380,18 +417,78 @@ class marranexController extends Controller
         $path = public_path('pdf/');
         $fileName =  'Envio No '.$sales[0]->code . '.' . 'pdf' ;
         $pdf->save($path . '/' . $fileName);
-        return $pdf->stream($fileName);
+        // return $pdf->stream($fileName);
         // return $pdf->output();
-        // return $fileName;
+        return $fileName;
         
     }
 
     public function getSales(){
-        $sales = sales::select('sales.id','sales.envio as code','clients.name as cliente','sales.tipoOperacion as tipo','sales.created_at as fecha','sales.total')->where(['envio' => 20])
+        $sales = sales::select('sales.id','sales.envio as code','clients.name as cliente','sales.tipoOperacion as tipo','sales.created_at as fecha','sales.total')
             ->join('clients','clients.id','=','sales.cliente_id')
             ->get();
 
         return response()->json($sales, 200);
+    }
+
+    public function getSalesBibt(){
+        $sales = sales::select('sales.id','sales.envio as code','clients.name as cliente','sales.tipoOperacion as tipo','sales.created_at as fecha','sales.total')
+            ->join('clients','clients.id','=','sales.cliente_id')
+            ->where(['sales.tipoOperacion' => 'Credito'])
+            ->get();
+
+        return response()->json($sales, 200);
+    }
+
+    public function dataSalesBibt(Request $request){
+        $data = credit::select('sales.id as code','sales.envio','sales.total','estados.name as estado','credits.id as credito')
+        ->join('sales','sales.id','=','credits.sales_id')
+        ->join('estados','estados.id','=','credits.status_id')
+        ->where(['sales.envio' => $request->code])->get();
+
+        return response()->json($data, 200);
+    }
+
+    public function banksList(){
+        $bancos = bank::all();
+        return response()->json($bancos, 200);
+    }
+
+    public function acreditar(Request $request){
+        try {
+            DB::beginTransaction();
+
+        
+            $credito = new detailCredit;
+
+            $credito->credits_id = $request->credito_id;
+            $credito->banks_id = $request->banks_id;
+            $credito->monto = $request->monto;
+
+            $credito->save();
+
+            $idCredit = $request->credito_id;
+
+            DB::commit();
+
+
+            return response()->json($idCredit, 200);
+        } catch (\Throwable $th) {
+            DB::rollback();
+
+            return response()->json(false, 200);
+
+        }
+    }
+
+
+    public function acreditacionesInfo(Request $request){
+        $data = detailCredit::select('banks.name','detail_credits.monto','detail_credits.created_at as fecha')
+        ->join('banks','banks.id', '=','detail_credits.banks_id')
+        ->where(['detail_credits.credits_id' => $request->id])
+        ->get();
+
+        return response()->json($data, 200);
     }
 
 

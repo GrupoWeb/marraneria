@@ -127,7 +127,7 @@ export default {
         },
         handlerURL: {
           addKardex: "tableInventory",
-          tableInventory: "tableInventory",
+          tableInventory: "tableInventoryTable",
           productList: "productList",
           measureList: "measureList",
         },

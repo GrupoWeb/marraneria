@@ -65,4 +65,8 @@ class marranex extends Controller
         return view('marranex.show.renvios');
     }
 
+    public function showDebts(){
+        return view('marranex.show.debt');
+    }
+
 }
