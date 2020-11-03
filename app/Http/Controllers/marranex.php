@@ -61,4 +61,8 @@ class marranex extends Controller
         return response()->json($data,200);
     }
 
+    public function reporteEnvio(){
+        return view('marranex.show.renvios');
+    }
+
 }

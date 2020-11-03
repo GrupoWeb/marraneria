@@ -68,6 +68,7 @@ Vue.component('product', require('./components/marranex/product.vue').default);
 Vue.component('channel', require('./components/marranex/channel.vue').default);
 Vue.component('sale',require('./components/marranex/sale/sale.vue').default);
 Vue.component('inventory', require('./components/marranex/inventory/inventory.vue').default);
+Vue.component('envio', require('./components/marranex/envios/envios.vue').default);
 
 
 

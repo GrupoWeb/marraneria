@@ -37,8 +37,8 @@
                                      <i class="nav-icon fas fa-ticket-alt"></i> Inventario</a>
                              </li>
                              <li class="nav">
-                                 <a class="nav-link" href="./edificios">
-                                     <i class="nav-icon fas fa-chart-line"></i> Reporte</a>
+                                 <a class="nav-link" href="{{ route('enviosR') }}">
+                                     <i class="nav-icon fas fa-chart-line"></i> Reporte Envios</a>
                              </li>
                              <li class="nav">
                                  <a class="nav-link" href="./edificios">
