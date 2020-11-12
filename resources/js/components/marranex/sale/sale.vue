@@ -8,10 +8,8 @@
             <el-row>
               <el-col :span="3">
                 <span class="nameF"> {{ handledText.nameF }} </span> </el-col
-              ><el-col :span="12">
-                <span class="numberF"> No. </span>
-                <span class="formatF"> {{ handledText.numberF }} </span>
-              </el-col>
+              >
+              
             </el-row>
           </el-col>
           <el-col :xs="25" :sm="6" :md="5" :xl="5">
@@ -277,7 +275,7 @@ export default {
         ],
       },
       handledText: {
-        nameF: "ENVIO:",
+        nameF: "ENVIO",
         numberF: "000000",
       },
       handledImage: {
@@ -299,7 +297,8 @@ export default {
       multipleSelection: [],
       handledList: {
         productList: "tableInventory",
-        productByID: "productByID",
+        // productByID: "productByID",
+        productByID: "InventoryProductById",
         getClient: "client",
         clientById: "clientById",
         getNumberShipping: "getNumberShipping/",
@@ -434,6 +433,7 @@ export default {
     listProduct() {
       axios.get(this.handledList.productList).then((response) => {
         this.handledResponse.listProduct = response.data;
+        console.log(response.data)
       });
     },
     handledDelete(row, subtotal) {
@@ -467,25 +467,25 @@ export default {
           })
           .then((response) => {
             console.log(response.data)
-            this.handledProduct.push({
-              code: response.data[0].id,
-              description: response.data[0].name,
-              counts: this.handledItemTable.countItem,
-              price: this.handledItemTable.priceItem,
-              discount: this.handledItemTable.discountItem,
-              subtotal:
-                this.handledItemTable.priceItem *
-                  this.handledItemTable.countItem -
-                this.handledItemTable.discountItem,
-            });
-
-            this.totalCurrent =
-              this.totalCurrent +
-              this.handledItemTable.priceItem *
-                this.handledItemTable.countItem -
-              this.handledItemTable.discountItem;
 
             if (response.data.length > 0) {
+              this.handledProduct.push({
+                code: response.data[0].id,
+                description: response.data[0].name,
+                counts: this.handledItemTable.countItem,
+                price: this.handledItemTable.priceItem,
+                discount: this.handledItemTable.discountItem,
+                subtotal:
+                  this.handledItemTable.priceItem *
+                    this.handledItemTable.countItem -
+                  this.handledItemTable.discountItem,
+              });
+  
+              this.totalCurrent =
+                this.totalCurrent +
+                this.handledItemTable.priceItem *
+                  this.handledItemTable.countItem -
+                this.handledItemTable.discountItem;
               this.$notify({
                 title: "Exitoso",
                 message: "Producto Añadido",
@@ -497,6 +497,12 @@ export default {
               this.handledItemTable.countItem = "";
               this.handledItemTable.priceItem = "";
               this.handledItemTable.discountItem = "";
+            }else{
+              this.$confirm('No se cuenta con el suficiente inventario para este producto, cuenta con menos o igual a 2', 'Saldo de Producto', {
+                confirmButtonText: 'OK',
+                type: 'warning',
+                center: true
+              })
             }
           });
       }

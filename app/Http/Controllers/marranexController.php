@@ -12,6 +12,9 @@ use App\Model\marranex\inventario;
 use App\Model\marranex\sequences;
 use App\Model\marranex\detailMaster;
 use App\Model\marranex\sales;
+use App\Model\marranex\credit;
+use App\Model\marranex\bank;
+use App\Model\marranex\detailCredit;
 
 
 
@@ -161,6 +164,17 @@ class marranexController extends Controller
         $inventory = inventario::selectRaw('inventarios.id as code, products.id as codeProduct, products.name as producto, medidas.nombre as medida, inventarios.cantidadMinima as cantidadMinima, inventarios.saldo')
             ->join('products','products.id','=','inventarios.producto_id')
             ->join('medidas','medidas.id','=','inventarios.medida_id')
+            ->where('inventarios.saldo','>','2')
+            ->get();
+
+            return response()->json($inventory, 200);
+    }
+
+    public function listInventoryTable(){
+        $inventory = inventario::selectRaw('inventarios.id as code, products.id as codeProduct, products.name as producto, medidas.nombre as medida, inventarios.cantidadMinima as cantidadMinima, inventarios.saldo')
+            ->join('products','products.id','=','inventarios.producto_id')
+            ->join('medidas','medidas.id','=','inventarios.medida_id')
+            
             ->get();
 
             return response()->json($inventory, 200);
@@ -191,6 +205,24 @@ class marranexController extends Controller
     public function productById(Request $request){
         $product = product::select('id','name')->where(['id' => $request->id])->get();
         return response()->json($product,200);
+    }
+
+    public function InventoryProductById(Request $request){
+
+        
+
+        $data = inventario::select('products.id','products.name','inventarios.saldo')
+            ->join('products','products.id','=','inventarios.producto_id')
+            ->where(['products.id' => $request->id])
+            ->get();
+
+        $saldo = $data[0]->saldo;
+            if($saldo >= 2){
+                return response()->json($data,200);
+            }else{
+                return response()->json(false, 200);
+            }
+        
     }
 
     public function getNumberShipping($tabla){
@@ -233,6 +265,11 @@ class marranexController extends Controller
             $sales->total = $request->total;
             $sales->save();
             $idSale = $sales->id;
+
+            $credit = new credit;
+            $credit->sales_id = $idSale;
+            $credit->status_id = 3;
+            $credit->save();
     
             $sales_id = $sales->id;
             
@@ -269,6 +306,7 @@ class marranexController extends Controller
     }
 
     public function GetBarCodeById(Request $request){
+        
 
         $sales = sales::select('sales.id','sales.envio as code','clients.name as cliente','sales.tipoOperacion as tipo','sales.created_at as fecha','sales.total')->where(['envio' => $request->id])
             ->join('clients','clients.id','=','sales.cliente_id')
@@ -280,6 +318,7 @@ class marranexController extends Controller
 
         // dd($detalle);
 
+        // 216 × 140
 
             $html = '
             <!DOCTYPE html>
@@ -290,47 +329,44 @@ class marranexController extends Controller
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <meta http-equiv="X-UA-Compatible" content="ie=edge">
                     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+                
                     <title>Envios Marranex</title>
                 </head>
+                <style>
+                    @page { size:8.5in 5.5in; margin: 1cm }
+                    *{
+                        font-size: 16px;
+                    }
+                </style>
                 <body>
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-xs-10 ">
-                            <h1>Envio</h1>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-xs-2 text-center">
-                            <strong>Fecha: '.  $sales[0]->fecha.'</strong>
-                            <br>
-                            <br>
-                            <strong>Envio No. '.  $sales[0]->code.'</strong>
-                            <br>
+                        
+                        <table class="table" >
+                            <tr>
+                                <td>
+                                    <strong>Envio: '.  $sales[0]->code.'</strong><br>
+                                    <strong >Fecha: '.  $sales[0]->fecha.'</strong><br>
+                                    <strong>Cliente: '.  $sales[0]->cliente.'</strong><br>
+                                    <strong>Operación: '.  $sales[0]->tipo.'</strong>
+                                </td>
+                                <td class="text-right">
+                                    <img class="rounded-lg " height="100" width="200" src="'.public_path('img/logo.jpg').'" alt="Logotipo">
+                                </td>
+                            </tr>
+                        </table>
                             
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row text-center" style="margin-bottom: 2rem;">
-                        <div class="col-xs-6">
-                            <h1 class="h2">Cliente: '.  $sales[0]->cliente.'</h1>
-                        </div>
-                    </div>
-                    <div class="row text-center" style="margin-bottom: 2rem;">
-                        <div class="col-xs-6">
-                            <h1 class="h2">Operación: '.  $sales[0]->tipo.'</h1>
-                        </div>
+                        
                     </div>
                     <div class="row">
                         <div class="col-xs-12">
                             <table class="table table-condensed table-bordered table-striped">
                                 <thead>
                                 <tr>
-                                    <th>Descripción</th>
-                                    <th>Cantidad</th>
-                                    <th>Precio unitario</th>
-                                    <th>SubTotal</th>
+                                    <th class="text-center">Descripción</th>
+                                    <th class="text-center">Cantidad</th>
+                                    <th class="text-center">Precio unitario</th>
+                                    <th class="text-center">SubTotal</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -376,7 +412,7 @@ class marranexController extends Controller
         $html2 = 'test';
         // $paper_size = array(0,0,144,308);
         // $pdf->setPaper($paper_size, 'landscape');
-        // $pdf->setOptions(['dpi' => 120, 'defaultFont' => 'sans-serif']);
+        $pdf->setOptions(['dpi' => 120, 'defaultFont' => 'sans-serif']);
         // return $pdf->stream("Códigos de Barra".'.pdf'); 
         $path = public_path('pdf/');
         $fileName =  'Envio No '.$sales[0]->code . '.' . 'pdf' ;
@@ -385,6 +421,74 @@ class marranexController extends Controller
         // return $pdf->output();
         return $fileName;
         
+    }
+
+    public function getSales(){
+        $sales = sales::select('sales.id','sales.envio as code','clients.name as cliente','sales.tipoOperacion as tipo','sales.created_at as fecha','sales.total')
+            ->join('clients','clients.id','=','sales.cliente_id')
+            ->get();
+
+        return response()->json($sales, 200);
+    }
+
+    public function getSalesBibt(){
+        $sales = sales::select('sales.id','sales.envio as code','clients.name as cliente','sales.tipoOperacion as tipo','sales.created_at as fecha','sales.total')
+            ->join('clients','clients.id','=','sales.cliente_id')
+            ->where(['sales.tipoOperacion' => 'Credito'])
+            ->get();
+
+        return response()->json($sales, 200);
+    }
+
+    public function dataSalesBibt(Request $request){
+        $data = credit::select('sales.id as code','sales.envio','sales.total','estados.name as estado','credits.id as credito')
+        ->join('sales','sales.id','=','credits.sales_id')
+        ->join('estados','estados.id','=','credits.status_id')
+        ->where(['sales.envio' => $request->code])->get();
+
+        return response()->json($data, 200);
+    }
+
+    public function banksList(){
+        $bancos = bank::all();
+        return response()->json($bancos, 200);
+    }
+
+    public function acreditar(Request $request){
+        try {
+            DB::beginTransaction();
+
+        
+            $credito = new detailCredit;
+
+            $credito->credits_id = $request->credito_id;
+            $credito->banks_id = $request->banks_id;
+            $credito->monto = $request->monto;
+
+            $credito->save();
+
+            $idCredit = $request->credito_id;
+
+            DB::commit();
+
+
+            return response()->json($idCredit, 200);
+        } catch (\Throwable $th) {
+            DB::rollback();
+
+            return response()->json(false, 200);
+
+        }
+    }
+
+
+    public function acreditacionesInfo(Request $request){
+        $data = detailCredit::select('banks.name','detail_credits.monto','detail_credits.created_at as fecha')
+        ->join('banks','banks.id', '=','detail_credits.banks_id')
+        ->where(['detail_credits.credits_id' => $request->id])
+        ->get();
+
+        return response()->json($data, 200);
     }
 
 
